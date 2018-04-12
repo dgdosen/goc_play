@@ -43,6 +43,7 @@ to quickly create a Cobra application.`,
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
+	fmt.Println("execute this...")
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -50,24 +51,34 @@ func Execute() {
 }
 
 func init() {
+	fmt.Println("in init")
+	// home, _ := homedir.Dir()
+	// fmt.Println("examining home direcotory", home)
 	cobra.OnInitialize(initConfig)
+	rootCmd.PersistentFlags().Parsed()
 
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.goc_play.yaml)")
-
+	rootCmd.PersistentFlags().StringP("api_endpoint", "a", "", "loaded from config")
+	viper.BindPFlag("api_endpoint", rootCmd.PersistentFlags().Lookup("api_endpoint"))
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	fmt.Println("config: api_endpoint: ", viper.Get("api_endpoint"))
+	fmt.Println("config: api_endpoint: ", viper.GetString("api_endpoint"))
 }
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
+	fmt.Println("looking for config file")
 	if cfgFile != "" {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
 	} else {
+		fmt.Println("you have a config file")
+
 		// Find home directory.
 		home, err := homedir.Dir()
 		if err != nil {
