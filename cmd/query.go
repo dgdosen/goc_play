@@ -15,7 +15,9 @@
 package cmd
 
 import (
+	// "bytes"
 	"context"
+	// "encoding/json"
 	"fmt"
 	"log"
 	"time"
@@ -77,6 +79,10 @@ to quickly create a Cobra application.`,
 			log.Fatal(err)
 		}
 
+		// if err := json.Unmarshal(resp, &response_data); err != nil {
+		// 	log.Fatal(err)
+		// }
+		// fmt.Println("response data: ", string(prettyJSON.Bytes()))
 		fmt.Println("response data: ", resp.raw().toString())
 
 	},
