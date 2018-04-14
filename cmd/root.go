@@ -51,9 +51,7 @@ func Execute() {
 }
 
 func init() {
-	fmt.Println("in init")
-	// home, _ := homedir.Dir()
-	// fmt.Println("examining home direcotory", home)
+	fmt.Println("in init...")
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().Parsed()
 
@@ -66,18 +64,17 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	fmt.Println("config: api_endpoint: ", viper.Get("api_endpoint"))
-	fmt.Println("config: api_endpoint: ", viper.GetString("api_endpoint"))
 }
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
-	fmt.Println("looking for config file")
+	fmt.Println("looking for config file", cfgFile)
 	if cfgFile != "" {
+		fmt.Println("you have a config file")
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
 	} else {
-		fmt.Println("you have a config file")
+		fmt.Println("you don't have a named config file")
 
 		// Find home directory.
 		home, err := homedir.Dir()
