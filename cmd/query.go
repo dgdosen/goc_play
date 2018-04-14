@@ -16,9 +16,9 @@ package cmd
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/machinebox/graphql"
 	"github.com/spf13/cobra"
@@ -49,7 +49,7 @@ to quickly create a Cobra application.`,
 		// 'query={ projects { name id } }'
 		// make a request
 		req := graphql.NewRequest(`
-			query ($key: String!) {
+			query {
 				projects {
 					name
 					id
@@ -58,11 +58,26 @@ to quickly create a Cobra application.`,
 		`)
 
 		// run it and capture the response
-		var respData string
-		if err := client.Run(ctx, req, &respData); err != nil {
+
+		type Project struct {
+			id   string
+			name string
+		}
+		type ResponseData struct {
+			projects []Project `json:"projects"`
+		}
+
+		// var prettyJSON bytes.Buffer
+		var resp struct {
+			data ResponseData `json:"data"`
+		}
+
+		// var respData ResponseStruct
+		if err := client.Run(ctx, req, &resp); err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println("response data: ", respData)
+
+		fmt.Println("response data: ", resp.raw().toString())
 
 	},
 }
