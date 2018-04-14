@@ -43,8 +43,9 @@ to quickly create a Cobra application.`,
 		client := graphql.NewClient(viper.GetString("api_endpoint"))
 
 		// define a Context for the request
-		ctx := context.Background()
-
+		// ctx := context.Background()
+		ctx, cancel := context.WithTimeout(context.Background(), 3200*time.Millisecond)
+		defer cancel()
 		// 'query={ projects { name id } }'
 		// make a request
 		req := graphql.NewRequest(`
