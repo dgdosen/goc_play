@@ -40,14 +40,16 @@ to quickly create a Cobra application.`,
 		fmt.Println("config (per viper runtime read): api_endpoint:", viper.Get("api_endpoint"))
 		fmt.Println("query called")
 
+		// per https://blog.machinebox.io/a-graphql-client-library-for-go-5bffd0455878
 		// create a client (safe to share across requests)
+		// read the api_endpoint out of the config file
 		client := graphql.NewClient(viper.GetString("api_endpoint"))
 
 		// define a Context for the request
 		ctx := context.Background()
 		// ctx, cancel := context.WithTimeout(context.Background(), 3200*time.Millisecond)
 		// defer cancel()
-		// 'query={ projects { name id } }'
+
 		// make a request
 		req := graphql.NewRequest(`query { projects { id name } }`)
 
@@ -56,6 +58,7 @@ to quickly create a Cobra application.`,
 			Id   string `json:"id"`
 			Name string `json:"name"`
 		}
+
 		type ResponseData struct {
 			Projects []Project `json:"projects"`
 		}
@@ -66,7 +69,8 @@ to quickly create a Cobra application.`,
 			log.Fatal(err)
 		}
 
-		fmt.Printf("%+v", raw_response)
+		// fmt.Printf("%+v", raw_response)
+		fmt.Println("results!:\n", raw_response)
 
 	},
 }
