@@ -20,7 +20,6 @@ import (
 	// "encoding/json"
 	"fmt"
 	"log"
-	"time"
 
 	"github.com/machinebox/graphql"
 	"github.com/spf13/cobra"
@@ -45,21 +44,14 @@ to quickly create a Cobra application.`,
 		client := graphql.NewClient(viper.GetString("api_endpoint"))
 
 		// define a Context for the request
-		// ctx := context.Background()
-		ctx, cancel := context.WithTimeout(context.Background(), 3200*time.Millisecond)
-		defer cancel()
+		ctx := context.Background()
+		// ctx, cancel := context.WithTimeout(context.Background(), 3200*time.Millisecond)
+		// defer cancel()
 		// 'query={ projects { name id } }'
 		// make a request
 		req := graphql.NewRequest(`query { projects { id name } }`)
 
 		// run it and capture the response
-		type ResponseCore struct {
-			Projects []struct {
-				Id   string
-				Name string
-			}
-		}
-
 		type Project struct {
 			Id   string `json:"id"`
 			Name string `json:"name"`
@@ -68,27 +60,13 @@ to quickly create a Cobra application.`,
 			Projects []Project `json:"projects"`
 		}
 
-		// var prettyJSON bytes.Buffer
-		type Response struct {
-			data ResponseData `json:"data"`
-		}
 		var raw_response ResponseData
-		// var raw_response Response
-		// var raw_response ResponseCore
 
-		// var respData ResponseStruct
 		if err := client.Run(ctx, req, &raw_response); err != nil {
 			log.Fatal(err)
 		}
 
-		// if err := json.Unmarshal(resp, &raw_response); err != nil {
-		// 	log.Fatal(err)
-		// }
-		// fmt.Println("response data: ", string(prettyJSON.Bytes()))
-		// fmt.Printf("Slice: %v\n", raw_response.data.projects)
-		// fmt.Println("response data: ", raw_response.projects[0])
 		fmt.Printf("%+v", raw_response)
-		// fmt.Printf(raw_response)
 
 	},
 }
