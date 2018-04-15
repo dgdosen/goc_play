@@ -50,40 +50,45 @@ to quickly create a Cobra application.`,
 		defer cancel()
 		// 'query={ projects { name id } }'
 		// make a request
-		req := graphql.NewRequest(`
-			query {
-				projects {
-					name
-					id
-				}
-			}
-		`)
+		req := graphql.NewRequest(`query { projects { id name } }`)
 
 		// run it and capture the response
+		type ResponseCore struct {
+			Projects []struct {
+				Id   string
+				Name string
+			}
+		}
 
 		type Project struct {
-			id   string
-			name string
+			Id   string `json:"id"`
+			Name string `json:"name"`
 		}
 		type ResponseData struct {
-			projects []Project `json:"projects"`
+			Projects []Project `json:"projects"`
 		}
 
 		// var prettyJSON bytes.Buffer
-		var resp struct {
+		type Response struct {
 			data ResponseData `json:"data"`
 		}
+		var raw_response ResponseData
+		// var raw_response Response
+		// var raw_response ResponseCore
 
 		// var respData ResponseStruct
-		if err := client.Run(ctx, req, &resp); err != nil {
+		if err := client.Run(ctx, req, &raw_response); err != nil {
 			log.Fatal(err)
 		}
 
-		// if err := json.Unmarshal(resp, &response_data); err != nil {
+		// if err := json.Unmarshal(resp, &raw_response); err != nil {
 		// 	log.Fatal(err)
 		// }
 		// fmt.Println("response data: ", string(prettyJSON.Bytes()))
-		fmt.Println("response data: ", resp.raw().toString())
+		// fmt.Printf("Slice: %v\n", raw_response.data.projects)
+		// fmt.Println("response data: ", raw_response.projects[0])
+		fmt.Printf("%+v", raw_response)
+		// fmt.Printf(raw_response)
 
 	},
 }
